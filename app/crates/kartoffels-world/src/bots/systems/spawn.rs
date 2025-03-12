@@ -140,12 +140,42 @@ fn sample_map(
     }
 }
 
+const POS_OFFSET_LIST: [IVec2; 20] = [
+    // this is just a hand written list of the filled in circle suggested in PR #59
+    // computing this shape could be done if the spawn radius was something to be configured in world setup
+    // but if this is just a static simple change then there is no need to worry about doing all that
+    IVec2::new(-2, -1),
+    IVec2::new(-2, 0),
+    IVec2::new(-2, 1),
+    IVec2::new(-1, -2),
+    IVec2::new(-1, -1),
+    IVec2::new(-1, 0),
+    IVec2::new(-1, 1),
+    IVec2::new(-1, 2),
+    IVec2::new(0, -2),
+    IVec2::new(0, -1),
+    IVec2::new(0, 1),
+    IVec2::new(0, 2),
+    IVec2::new(1, -2),
+    IVec2::new(1, -1),
+    IVec2::new(1, 0),
+    IVec2::new(1, 1),
+    IVec2::new(1, 2),
+    IVec2::new(2, -1),
+    IVec2::new(2, 0),
+    IVec2::new(2, 1),
+];
 fn is_pos_legal(
     map: &Map,
     bots: &AliveBots,
     objs: &Objects,
     pos: IVec2,
 ) -> bool {
+    for pos_off in POS_OFFSET_LIST {
+        if bots.lookup_at(pos + pos_off).is_some() {
+            return false;
+        }
+    }
     map.get(pos).is_floor()
         && bots.lookup_at(pos).is_none()
         && objs.lookup_at(pos).is_none()
